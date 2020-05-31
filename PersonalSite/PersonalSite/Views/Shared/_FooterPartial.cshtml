@@ -1,0 +1,37 @@
+﻿
+<div class="fly-footer">
+    <p>
+        <a href="http://hlj3.cn/">三六九社区</a> - @DateTime.Now.Year.ToString() &copy;
+        <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://"); document.write(unescape("%3Cspan id='cnzz_stat_icon_1275095046'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1275095046%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+    </p>
+    <p>
+        @*<a href="http://hlj3.cn:90/" target="_blank">社区1.0</a>
+            <a href="http://hlj3.cn/" target="_blank">社区2.0</a>
+            <a href="http://www.hlj3.cn/" target="_blank">社区3.0</a>*@
+        @*<a href="mailto:qctvip@vip.163.com">qctvip@vip.163.com</a>
+            <a href="/Home/Temp" target="_blank">关于</a>*@
+        本站所有信息均采集于互联网,若有侵权请联系：<a href="mailto:qctvip@vip.163.com">qctvip@vip.163.com</a>
+    </p>
+
+</div>
+
+<script src="/res/layui/layui.js"></script>
+<script>
+    //layui.cache.page = '';
+    //layui.cache.user = {
+    //    username: '游客'
+    //    , uid: 1
+    //    , avatar: '/res/images/avatar/0.jpg'
+    //    , experience: 0
+    //    , sum: 0
+    //    , vip: ''
+    //    , sex: ''
+    //};
+
+    layui.config({
+        version: "3.0.0"
+        , base: '/res/mods/'
+    }).extend({
+        fly: 'index'
+    }).use('fly');
+</script>

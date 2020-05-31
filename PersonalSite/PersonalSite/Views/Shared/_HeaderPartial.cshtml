@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNet.Identity
+<!--Hearder-->
+<div class="fly-header layui-bg-black">
+    <div class="layui-container">
+        <a class="fly-logo" href="/" style="color:#5FB878;font:bold 30px LiSu;">
+            @*<i class="layui-icon layui-icon-read" style="font-size:30px;"></i>*@
+            三六九社区
+        </a>
+        <ul class="layui-nav fly-nav layui-hide-xs">
+            <li class="layui-nav-item layui-hide-xs">
+                <a href="/Article/Index/10"><i class="iconfont icon-biaoqing"></i>搞笑段子</a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs">
+                <a href="/Article/Index/12"><i class="iconfont icon-jifen"></i>黄帝内经</a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs">
+                <a href="/Article/Trends/1"><i class="layui-icon layui-icon-log"></i>动态</a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs">
+                <a href="/Comment/Index"><i class="iconfont icon-jiaoliu"></i>留言</a>
+            </li>
+        </ul>
+        @Html.Partial("_LoginPartial")
+
+    </div>
+</div>

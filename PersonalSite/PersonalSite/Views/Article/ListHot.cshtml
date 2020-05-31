@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Model.T_ArticlesSimple>
+
+<dl class="fly-panel fly-list-one">
+    <dt class="fly-panel-title">本周热议</dt>
+    @foreach (var item in Model)
+    {
+        <dd>
+            @*<a href="/Article/Detail/@item.Id">@item.Title</a>*@
+            <a href="/Art/@item.StaticPath">@item.Title</a>
+            <span><i class="iconfont icon-pinglun1"></i> @item.ComCount</span>
+        </dd>
+    }
+    @if (Model == null)
+    {
+        <div class="fly-none">没有相关数据</div>
+    }
+</dl>

@@ -1,0 +1,121 @@
+﻿
+<table class="layui-hide" id="myTable" lay-filter="myTable"></table>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="check">批量审核</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">批量删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">批量静态化</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">审核</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+@section scripts{
+    <script>
+        layui.config({
+            version: "3.0.0"
+            , base: '/res/mods/'
+        }).extend({
+            fly: 'index'
+        }).use(['fly', 'table'], function () {
+            var table = layui.table, fly = layui.fly;
+            //第一个实例
+            table.render({
+                elem: '#myTable'
+                , url: '/Admin/Home/ModComments' //数据接口
+                , method: 'post'
+                , page: true //开启分页
+                , limit: 10
+                , cellMinWidth: 150
+                , toolbar: '#toolbarDemo'
+                , title: '数据列表'
+                , cols: [[ //表头
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'Id', title: 'ID', sort: true, width: 80 }
+                    , { field: 'ArticleId', title: '文章ID', sort: true }
+                    , { field: 'PostDate', title: '评论时间', sort: true }
+                    , { field: 'Msg', title: '评论内容', sort: true }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 165 }
+                ]]
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.Status, //解析接口状态
+                        "msg": res.Message, //解析提示文本
+                        "count": res.Total, //解析数据长度
+                        "data": res.Data //解析数据列表
+                    };
+                }
+            });
+            //头工具栏事件
+            table.on('toolbar(myTable)', function (obj) {
+                console.log(obj);
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'check':
+                        var data = checkStatus.data;
+                        if (data.length > 0) {
+                            fly.json('/Admin/Home/RequestComments', { 'action': 'check', 'data': JSON.stringify(data) }, function (res) {
+                                layer.msg(res.msg);
+                            })
+                        } else {
+                            layer.msg('至少选择一项！');
+                            return;
+                        }
+                        break;
+                    case 'delete':
+                        var data = checkStatus.data;
+                        if (data.length > 0) {
+                            layer.confirm('确认删除选中行么', function (index) {
+                                fly.json('/Admin/Home/RequestComments', { 'action': 'batchdel', 'data': JSON.stringify(data) }, function (res) {
+                                    layer.msg(res.msg);
+                                });
+                                layer.close(index);
+
+                            });
+                        } else {
+                            layer.msg('至少选择一项！');
+                            return;
+                        }
+                        break;
+                    case 'isAll':
+                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                        break;
+                };
+            });
+            //监听行工具事件
+            table.on('tool(myTable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        fly.json('/Admin/Home/RequestComments', { 'action': 'delete', 'data': JSON.stringify(data) }, function (res) {
+                            layer.msg(res.msg);
+                        });
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.prompt({
+                        formType: 2
+                        , value: data.email
+                    }, function (value, index) {
+                        obj.update({
+                            email: value
+                        });
+                        layer.close(index);
+                    });
+                } else if (obj.event === "check") {
+                    layer.confirm('审核通过？', function (index) {
+                        fly.json('/Admin/Home/RequestComments', { 'action': 'check', 'data': JSON.stringify(data) }, function (res) {
+                            layer.msg(res.msg);
+                        })
+                    });
+                }
+            });
+
+        });
+    </script>
+}

@@ -1,0 +1,34 @@
+﻿<div class="fly-panel fly-column">
+    <div class="layui-container">
+        <ul class="layui-clear">
+            <li class="layui-hide-xs"><a href="/">首页</a></li>
+
+            @foreach (Model.T_Channels item in ViewBag.Channel)
+            {
+
+                <li>
+                    @Html.ActionLink(item.Name, "Index", "Article", new { id = item.Id }, null)
+                    @*<span class="layui-badge-dot"></span>*@
+
+                </li>
+
+            }
+
+            <!--登录后显示-->
+            @*<li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
+                <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/">我发表的贴</a></li>
+                <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="/user/#collection">我收藏的贴</a></li>*@
+
+        </ul>
+
+        <div class="fly-column-right layui-hide-xs">
+            <span class="fly-search"><i class="layui-icon">&#xe615;</i></span>
+            @Html.ActionLink("发表文章", "Add", "Article", null, new { @class = "layui-btn" })
+        </div>
+
+        <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
+            @Html.ActionLink("发表文章", "Add", "Article", null, new { @class = "layui-btn" })
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,96 @@
+﻿<table class="layui-hide" id="myTable" lay-filter="myTable"></table>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">审核</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+@section scripts{
+
+    <script>
+        layui.use('table', function () {
+            var table = layui.table;
+            console.log("我进来了");
+            //第一个实例
+            table.render({
+                elem: '#myTable'
+                , url: '/Admin/Home/AdMgr' //数据接口
+                , method: 'post'
+                , page: true //开启分页
+                , toolbar: '#toolbarDemo'
+                , title: '数据列表'
+                , cols: [[ //表头
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'Id', title: 'ID', sort: true }
+                    , { field: 'Name', title: '名称', sort: true }
+                    , { field: 'PositionId', title: '广告位', sort: true }
+                    , { field: 'AdType', title: '广告类型', sort: true }
+                    , { field: 'TextAdText', title: 'TextAdText', sort: true }
+                    , { field: 'TextAdUrl', title: 'TextAdUrl', sort: true }
+                    , { field: 'PicAdImgUrl', title: 'PicAdImgUrl', sort: true }
+                    , { field: 'PicAdUrl', title: 'PicAdUrl', sort: true }
+                    , { field: 'CodeAdHTML', title: 'CodeAdHTML', sort: true }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo' }
+                ]]
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.Status, //解析接口状态
+                        "msg": res.Message, //解析提示文本
+                        "count": res.Total, //解析数据长度
+                        "data": res.Data //解析数据列表
+                    };
+                }
+            });
+            //头工具栏事件
+            table.on('toolbar(myTable)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'getCheckData':
+                        var data = checkStatus.data;
+                        layer.alert(JSON.stringify(data));
+                        break;
+                    case 'getCheckLength':
+                        var data = checkStatus.data;
+                        layer.msg('选中了：' + data.length + ' 个');
+                        break;
+                    case 'isAll':
+                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                        break;
+                };
+            });
+
+            //监听行工具事件
+            table.on('tool(myTable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.prompt({
+                        formType: 2
+                        , value: data.email
+                    }, function (value, index) {
+                        obj.update({
+                            email: value
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+
+        });
+    </script>
+
+}

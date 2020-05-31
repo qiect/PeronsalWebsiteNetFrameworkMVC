@@ -1,0 +1,270 @@
+﻿@model IEnumerable<Model.T_Articles>
+
+<table class="layui-hide" id="myTable" lay-filter="myTable" lay-even=""></table>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="check">批量审核</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">批量删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="batchStatic">全部静态化</button>
+        <button class="layui-btn layui-btn-sm" lay-event="createIndex">全部创建索引</button>
+        <button class="layui-btn layui-btn-sm" lay-event="addPageData">通过规则添加网页数据</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">审核</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+@section scripts{
+    <script>
+        layui.config({
+            version: "3.0.0"
+            , base: '/res/mods/'
+        }).extend({
+            fly: 'index'
+        }).use(['fly', 'table'], function () {
+            var table = layui.table, fly = layui.fly;
+            //第一个实例
+            table.render({
+                elem: '#myTable'
+                , url: '/Admin/Home/ArticleMgr' //数据接口
+                , method: 'post'
+                , page: true //开启分页
+                , limit: 10
+                , cellMinWidth: 150
+                , toolbar: '#toolbarDemo'
+                , title: '数据列表'
+                , cols: [[ //表头
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'Id', title: 'ID', sort: true, width: 80 }
+                    , { field: 'Title', title: '标题', sort: true }
+                    , { field: 'ChannelId', title: '频道', sort: true, width: 80 }
+                    , { field: 'StaticPath', title: '静态地址', sort: true }
+                    , { field: 'PostDate', title: '更新时间', sort: true }
+                    , { field: 'DingCount', title: '人气', sort: true, width: 80 }
+                    , { field: 'ComCount', title: '回答', sort: true, width: 80 }
+                    , { field: 'UserId', title: '用户', sort: true }
+                    , { field: 'IsVisible', title: '审核状态', sort: true, width: 120 }
+                    //, { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 165 }
+                ]]
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.Status, //解析接口状态
+                        "msg": res.Message, //解析提示文本
+                        "count": res.Total, //解析数据长度
+                        "data": res.Data //解析数据列表
+                    };
+                }
+            });
+            //头工具栏事件
+            table.on('toolbar(myTable)', function (obj) {
+                console.log(obj);
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'check':
+                        var data = checkStatus.data;
+                        if (data.length > 0) {
+                            fly.json('/Admin/Home/RequestArticles', { 'action': 'check', 'data': JSON.stringify(data) }, function (res) {
+                                layer.msg(res.msg);
+                            })
+                        } else {
+                            layer.msg('至少选择一项！');
+                            return;
+                        }
+                        break;
+                    case 'delete':
+                        var data = checkStatus.data;
+                        if (data.length > 0) {
+                            layer.confirm('确认删除选中行么', function (index) {
+                                fly.json('/Admin/Home/RequestArticles', { 'action': 'batchdel', 'data': JSON.stringify(data) }, function (res) {
+                                    layer.msg(res.msg);
+                                });
+                                layer.close(index);
+
+                            });
+                        } else {
+                            layer.msg('至少选择一项！');
+                            return;
+                        }
+                        break;
+                    case 'addPageData':
+                        fly.json('/Admin/Home/RequestArticles', { 'action': 'addpagedata' }, function (res) {
+                            layer.msg(res.msg);
+                        });
+                        break;
+                    case 'batchStatic':
+                        fly.json('/Admin/Home/RequestArticles', { 'action': 'batchStatic' }, function (res) {
+                            layer.msg(res.msg);
+                        });
+                        break;
+                    case 'createIndex':
+                        fly.json('/Admin/Home/RequestArticles', { 'action': 'createindexall' }, function (res) {
+                            layer.msg(res.msg);
+                        });
+                        break;
+                    case 'isAll':
+                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                        break;
+                };
+            });
+            //监听行工具事件
+            table.on('tool(myTable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        fly.json('/Admin/Home/RequestArticles', { 'action': 'delete', 'data': JSON.stringify(data) }, function (res) {
+                            layer.msg(res.msg);
+                        });
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.prompt({
+                        formType: 2
+                        , value: data.email
+                    }, function (value, index) {
+                        obj.update({
+                            email: value
+                        });
+                        layer.close(index);
+                    });
+                } else if (obj.event === "check") {
+                    layer.confirm('审核通过？', function (index) {
+                        fly.json('/Admin/Home/RequestArticles', { 'action': 'check', 'data': JSON.stringify(data) }, function (res) {
+                            layer.msg(res.msg);
+                        })
+                    });
+                }
+            });
+
+        });
+    </script>
+
+    <script>
+
+        /*资讯-查看*/
+        function article_look(title, url, id, w, h) {
+            var index = layer.open({
+                type: 2,
+                title: title,
+                content: url + '/' + id
+            });
+            layer.full(index);
+        }
+
+        /*资讯-编辑*/
+        function article_edit(title, url, id, w, h) {
+            var index = layer.open({
+                type: 2,
+                title: title,
+                content: url + '?action=edit&id=' + id
+            });
+            layer.full(index);
+        }
+
+        /*资讯-删除*/
+        function article_del(obj, id) {
+            layer.confirm('确认要删除吗？', function (index) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/Home/RequestArticles',
+                    data: { 'action': 'delete', 'id': id },
+                    dataType: 'json',
+                    success: function (data) {
+                        $(obj).parents("tr").remove();
+                        layer.msg('已删除!', { icon: 1, time: 2000 });
+                    },
+                    error: function (data) {
+                        console.log(data.msg);
+                    },
+                });
+            });
+        }
+
+        /*资讯-批量删除*/
+        function datadel() {
+            var ids = "";
+            var $checked = $("input[type='checkbox']:checked");
+            if ($checked.length <= 0) {
+                layer.msg("至少选择一项!");
+                return;
+            }
+            $checked.each(function () {
+                ids += $(this).val() + ',';
+            });
+            ids.length > 0 && (ids = ids.substring(0, ids.length - 1));
+            console.log(ids);
+            layer.confirm('确认要批量删除吗？', function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Admin/Home/RequestArticles',
+                    data: { 'action': 'batchdel', 'id': ids },
+                    dataType: 'json',
+                    success: function () {
+                        layer.msg('批量删除成功!', { icon: 1, time: 2000 });
+                    },
+                    error: function (data) {
+                        console.log(data.msg);
+                    },
+                });
+            });
+        }
+
+        /*资讯-批量静态化*/
+        function datastatic() {
+            $.ajax({
+                type: 'Get',
+                url: '/Admin/Home/RequestArticles',
+                data: { 'action': 'static' },
+                dataType: 'json',
+                success: function (data) {
+                    if (data == "ok") {
+                        layer.msg('批量静态化成功!', { icon: 1, time: 2000 });
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        }
+
+        /*资讯-批量静态化*/
+        function createindex() {
+            $.ajax({
+                type: 'Get',
+                url: '/Admin/Home/RequestArticles',
+                data: { 'action': 'createindexall' },
+                dataType: 'json',
+                success: function (data) {
+                    if (data == "ok") {
+                        layer.msg('页面全部创建索引成功!', { icon: 1, time: 2000 });
+                    } else {
+                        layer.msg('页面全部创建索引失败!', { icon: 1, time: 2000 });
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        }
+
+        function addpagedata() {
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/Home/RequestArticles',
+                data: { 'action': 'addpagedata' },
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null && data.length > 0) {
+                        layer.msg('通过规则添加数据成功!', { icon: 1, time: 2000 });
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        }
+    </script>
+}

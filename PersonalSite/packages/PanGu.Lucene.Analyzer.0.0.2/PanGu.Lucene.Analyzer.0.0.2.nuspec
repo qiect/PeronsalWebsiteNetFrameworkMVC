@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>PanGu.Lucene.Analyzer</id>
+    <version>0.0.2</version>
+    <title>PanGu.Lucene.Analyzer</title>
+    <authors>Never、C</authors>
+    <owners>Never、C</owners>
+    <licenseUrl>https://github.com/NeverCL/PanGu.Lucene.Analyzer/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/NeverCL/PanGu.Lucene.Analyzer</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>盘古分词是一个中英文分词组件,
+基于官方代码移植,已适配Lucene.Net 3.x.
+欢迎Fork GitHub!</description>
+    <summary>- PanGu.Lucene.Analyzer.dll</summary>
+    <releaseNotes>- PanGu.Lucene.Analyzer.dll</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <language>zh-CN</language>
+    <tags>Lucene PanGu Segment lucene pangu segment</tags>
+    <dependencies>
+      <dependency id="PanGu.Segment" version="0.0.3" />
+      <dependency id="Lucene.Net" version="3.0.3" />
+    </dependencies>
+  </metadata>
+</package>

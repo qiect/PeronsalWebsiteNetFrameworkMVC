@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNet.Identity
+<ul class="layui-nav fly-nav-user">
+
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <li class="layui-nav-item">
+                <a class="fly-nav-avatar" href="javascript:;">
+                    <cite class="layui-hide-xs">
+                        @User.Identity.GetUserName()
+                    </cite>
+                    <img src="~/res/images/avatar/default.png">
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/Account/Index"><i class="layui-icon">&#xe620;</i>用户中心</a></dd>
+                    <dd><a href="/Account/Manage"><i class="layui-icon">&#xe620;</i>基本设置</a></dd>
+                    <dd><a href="/Admin/Home"><i class="iconfont icon-tongzhi" style="top: 4px;"></i>后台管理</a></dd>
+                    <dd><a href=""><i class="layui-icon" style="margin-left: 2px; font-size: 22px;">&#xe68e;</i>我的主页</a></dd>
+                    <hr style="margin: 5px 0;">
+                    @*<dd><a href="/user/logout/" style="text-align: center;">退出</a></dd>*@
+                    <dd><a style="text-align: center;" href="javascript:document.getElementById('logoutForm').submit()">注销</a></dd>
+                </dl>
+            </li>
+        }
+    }
+    else
+    {
+        <li class="layui-nav-item">
+            @Html.ActionLink(" ", "Login", "Account", null, new { @class = "iconfont icon-touxiang layui-hide-xs" })
+        </li>
+        <li class="layui-nav-item">
+            @Html.ActionLink("登入", "Login", "Account")
+        </li>
+        <li class="layui-nav-item">
+            @Html.ActionLink("注册", "Register", "Account")
+        </li>
+        @*<li class="layui-nav-item layui-hide-xs">
+                <a href="#" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
+            </li>
+            <li class="layui-nav-item layui-hide-xs">
+                <a href="#" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入" class="iconfont icon-weibo"></a>
+            </li>*@
+        <li class="layui-nav-item layui-hide-sm">
+            <a href="javascript:;"><i class="layui-icon">&#xe671;</i></a>
+            <dl class="layui-nav-child">
+                <dd><a href="/Article/Index/10"><i class="iconfont icon-biaoqing"></i>搞笑段子</a></dd>
+                <dd><a href="/Article/Index/12"><i class="iconfont icon-jifen"></i>黄帝内经</a></dd>
+                <dd><a href="/Article/Trends/1"><i class="layui-icon layui-icon-log"></i>动态</a></dd>
+                <dd><a href="/Comment/Index"><i class="iconfont icon-jiaoliu"></i>留言</a></dd>
+            </dl>
+        </li>
+    }
+</ul>

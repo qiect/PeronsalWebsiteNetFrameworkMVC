@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Model.T_Articles>
+@{
+    ViewBag.Title = "三六九社区-动态";
+}
+<!--Column-->
+@Html.Action("Index", "Channel")
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>时间线</legend>
+            </fieldset>
+            <ul class="layui-timeline">
+
+                @foreach (var item in Model)
+                {
+                    <li class="layui-timeline-item">
+                        <i class="layui-icon layui-timeline-axis"></i>
+                        <div class="layui-timeline-content layui-text">
+                            <h3 class="layui-timeline-title">@item.PostDate.ToString("yyyy年M月d日")</h3>
+                            @Html.Raw(item.Msg)
+                        </div>
+                    </li>
+                }
+                <li class="layui-timeline-item">
+                    <i class="layui-icon layui-timeline-axis"></i>
+                    <div class="layui-timeline-content layui-text">
+                        <div class="layui-timeline-title">过去</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="layui-col-md4">
+            @Html.Action("ListHot", "Article")
+            <div class="fly-panel" style="padding: 20px 0; text-align: center;">
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+﻿
+@model IEnumerable<Model.T_Comments>
+@{
+    ViewBag.Title = "三六九社区-留言";
+    Random r = new Random();
+    if (Model == null)
+    {
+        <li class="fly-none">消灭零回复</li>
+    }
+}
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8 content detail">
+            <div class="fly-panel detail-box" id="flyReply">
+
+                <div class="layui-form layui-form-pane">
+                    <form action="/Article/Comments" method="post">
+                        <div class="layui-form-item layui-form-text">
+                            <a name="comment"></a>
+                            <div class="layui-input-block">
+                                <textarea id="L_content" name="content" required lay-verify="required" placeholder="说两句吧..." class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="L_vercode" class="layui-form-label">人类验证</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <img title="看不清？换一张" src="@Url.Action("ValidateCode","Account") " style="cursor: pointer;border-radius: 4px;" onclick="this.src=this.src+'?'" />
+                            </div>
+                            <div class="layui-input-inline" style="text-align:right;">
+                                <input type="hidden" name="artId" value="0">
+                                <button class="layui-btn" lay-filter="*" lay-submit>提交回复</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <fieldset class="layui-elem-field layui-field-title">
+                    <legend>大家都说了些什么？</legend>
+                </fieldset>
+                <ul class="jieda" id="jieda">
+                    @foreach (var item in Model)
+                    {
+
+                        <li>
+                            <a></a>
+                            <div class="detail-about detail-about-reply">
+                                <a class="fly-avatar" href="#">
+                                    <img src="~/res/images/avatar/@(r.Next(11)).jpg">
+                                </a>
+                                <div class="fly-detail-user">
+                                    <a href="#" class="fly-link">
+                                        <cite>小笨蛋</cite>
+                                    </a>
+                                </div>
+                                <div class="detail-hits">
+                                    <span>@item.PostDate.ToString("yyyy-MM-dd")</span>
+                                </div>
+
+                            </div>
+                            <div class="detail-body jieda-body photos">
+                                @item.Msg
+                            </div>
+                        </li>
+                    }
+
+                </ul>
+                <div style="text-align: center">
+                </div>
+
+
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            @Html.Action("ListHot", "Article")
+        </div>
+    </div>
+</div>

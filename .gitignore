@@ -3,3 +3,14 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+/PersonalSite/.vs/PersonalSite/v16/Server/sqlite3
+/PersonalSite/Model/bin
+/PersonalSite/Model/obj
+/PersonalSite/PersonalSite/bin
+/PersonalSite/PersonalSite/obj
+/PersonalSite/PersonalSite/Art
+/PersonalSite/BLL/bin
+/PersonalSite/BLL/obj
+/PersonalSite/DAL/obj
+/PersonalSite/DAL/bin
+/PersonalSite/Helper/bin

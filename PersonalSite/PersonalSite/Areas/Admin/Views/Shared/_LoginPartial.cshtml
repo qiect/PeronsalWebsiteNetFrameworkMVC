@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNet.Identity
+<ul class="layui-nav layui-layout-right">
+
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "../Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <li class="layui-nav-item">
+                <a class="fly-nav-avatar" href="javascript:;">
+                    <img class="layui-nav-img" src="~/res/images/avatar/default.png">
+                    <cite class="layui-hide-xs">
+                        @User.Identity.GetUserName()
+                    </cite>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="/Account/Manage">基本设置</a></dd>
+                    <dd><a href="/Admin/Home">后台管理</a></dd>
+                    <dd><a href="">我的主页</a></dd>
+                    <hr style="margin: 5px 0;">
+                    @*<dd><a href="/user/logout/" style="text-align: center;">退出</a></dd>*@
+                    <dd><a style="text-align: center;" href="javascript:document.getElementById('logoutForm').submit()">注销</a></dd>
+                </dl>
+            </li>
+        }
+    }
+    else
+    {
+        <li class="layui-nav-item">
+            @Html.ActionLink(" ", "Login", "../Account", null, new { @class = "iconfont icon-touxiang layui-hide-xs" })
+        </li>
+        <li class="layui-nav-item">
+            @Html.ActionLink("登入", "Login", "../Account")
+        </li>
+        <li class="layui-nav-item">
+            @Html.ActionLink("注册", "Register", "../Account")
+        </li>
+        <li class="layui-nav-item layui-hide-xs">
+            <a href="#" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" title="QQ登入" class="iconfont icon-qq"></a>
+        </li>
+        <li class="layui-nav-item layui-hide-xs">
+            <a href="#" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" title="微博登入" class="iconfont icon-weibo"></a>
+        </li>
+    }
+</ul>

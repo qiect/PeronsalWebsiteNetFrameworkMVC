@@ -1,0 +1,57 @@
+﻿@using BLL
+@{
+    ViewBag.Title = "三六九社区";
+}
+
+<!--Column-->
+@Html.Action("Index", "Channel")
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8">
+            <div class="fly-panel" style="margin-bottom: 0;">
+                @Html.Action("Filter", "Channel")
+                <ul class="fly-list" id="rowArts">
+                    @Html.Action("List", "Article")
+                </ul>
+
+                <!--没有数据给出提示-->
+                @*<div class="fly-none">没有相关数据</div>*@
+                <div style="border-top: 1px dotted #e2e2e2; text-align: center;" id="page">
+                    <div style="text-align: center">
+                        <div class="laypage-main">
+                            <!--加载下一页-->
+                            <a class="laypage-next" style="cursor: pointer">更多求解</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            @Html.Action("ListHot", "Article")
+            <div class="fly-panel" style="padding: 20px 0; text-align: center;">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+    var channelId= @TempData["ChannelId"].ToString();
+    var pageIndex = 1;
+    var flag = true;
+    var pageCount =@ViewBag.PageCount +"";
+    layui.use('jquery', function () {
+        var jquery = layui.jquery;
+        var $ = layui.$;
+        $(".laypage-next").click(function () {
+            $.post("/Article/AddData", { "id": channelId, "pageIndex": ++pageIndex }, function (data) {
+                $("#rowArts").append(data);
+                flag = true;//可以继续加载数据
+            });
+        });
+    });
+
+    </script>
+}

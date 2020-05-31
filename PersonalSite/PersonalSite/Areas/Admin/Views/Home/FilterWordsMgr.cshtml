@@ -1,0 +1,249 @@
+﻿@model IEnumerable<Model.T_FilterWords>
+
+<script type="text/javascript">
+
+    //$("#btnAdd").click(function () {
+    //    var $word = $("#txtWord").val(),
+    //        $replace = $("#txtReplace").val(),
+    //        data = {};
+    //    data["action"] = "add";
+    //    data["word"] = $word;
+    //    data["replace"] = $replace;
+    //    $.ajax({
+    //        type: 'POST',
+    //        url: '/Admin/Home/RequestFilterWords',
+    //        data: data,
+    //        dataType: 'json',
+    //        success: function (data) {
+    //            layer.msg('添加成功!', { icon: 1, time: 2000 });
+    //        }
+    //    })
+
+    //})
+
+    /*过滤词-删除*/
+    function public_del(obj, id) {
+        layer.confirm('确认要删除吗？', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/Home/RequestFilterWords',
+                data: { 'action': 'delete', 'id': id },
+                dataType: 'json',
+                success: function (data) {
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!', { icon: 1, time: 2000 });
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+    /*过滤词-导入*/
+    function data_import() {
+
+
+
+    }
+    /*过滤词-导出*/
+    function data_export() {
+        layer.confirm('确认要导出文件吗？', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/Home/RequestFilterWords',
+                data: { 'action': 'export' },
+                dataType: 'json',
+                success: function (data) {
+                    if (data == "ok") {
+                        layer.msg('文件已导出!', { icon: 1, time: 2000 });
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+</script>
+
+
+<div class="cl pd-5 bg-1 bk-gray mt-20">
+    <div class="row">
+        @*@using (Ajax.BeginForm("UploadFile", "Home", new AjaxOptions { HttpMethod = "post", LoadingElementDuration = 500 }, new { enctype = "multipart/form-data" }))*@
+        @using (Html.BeginForm("UploadFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <a class="btn btn-primary radius" onclick="data_add_modal()">新增</a>
+            <span class="btn-upload form-group">
+                <input class="input-text upload-url radius" type="text" name="uploadfile-1" id="uploadfile-1" readonly><a href="javascript:void();" class="btn btn-primary radius"><i class="iconfont">&#xf0020;</i> 浏览文件</a>
+                <input type="file" multiple name="file" class="input-file">
+            </span>
+            <input class="btn btn-primary radius" type="submit" value="导入" />
+            <a class="btn btn-primary radius" href="/Admin/Home/Export">导出</a>
+            @*<a class="btn btn-primary radius" onclick="data_export()" href="javascript:;">导出</a>*@
+        }
+    </div>
+</div>
+
+
+<!--对话框-->
+@*<div id="modal-filterword" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content radius">
+                <div class="modal-header">
+                    <h3 class="modal-title">添加记录</h3>
+                    <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+                </div>
+                <div class="modal-body">
+                    <div class="form modal-form">
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-4 text-r">过滤词：</label>
+                            <div class="formControls col-xs-8 col-sm-4">
+                                <input class="input-text" id="txtWord" autocomplete="off" placeholder="请输入过滤词" type="text" />
+                            </div>
+                        </div>
+                        <div class="row cl">
+                            <label class="form-label col-xs-4 col-sm-4 text-r">替换词：</label>
+                            <div class="formControls col-xs-8 col-sm-4">
+                                <input class="input-text" id="txtReplace" autocomplete="off" placeholder="请输入替换词" type="text" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="btnAdd">确定</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+
+
+
+
+<table class="layui-hide" id="myTable" lay-filter="myTable"></table>
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-primary" lay-event="check">批量审核</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">批量删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">批量静态化</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">新增</button>
+        <button class="layui-btn layui-btn-sm" id="test3"><i class="layui-icon"></i>上传文件</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">导入</button>
+        <button class="layui-btn layui-btn-sm" lay-event="delete">导出</button>
+
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="check">审核</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+@section scripts{
+    <script>
+        layui.config({
+            version: "3.0.0"
+            , base: '/res/mods/'
+        }).extend({
+            fly: 'index'
+        }).use(['fly', 'table'], function () {
+            var table = layui.table, fly = layui.fly;
+            //第一个实例
+            table.render({
+                elem: '#myTable'
+                , url: '/Admin/Home/FilterWordsMgr' //数据接口
+                , method: 'post'
+                , page: true //开启分页
+                , limit: 10
+                , cellMinWidth: 150
+                , toolbar: '#toolbarDemo'
+                , title: '数据列表'
+                , cols: [[ //表头
+                    { type: 'checkbox', fixed: 'left' }
+                    , { field: 'Id', title: 'ID', sort: true, width: 80 }
+                    , { field: 'WordPattern', title: '过滤词', sort: true }
+                    , { field: 'ReplaceWord', title: '替换词', sort: true }
+                    , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 165 }
+                ]]
+                , parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.Status, //解析接口状态
+                        "msg": res.Message, //解析提示文本
+                        "count": res.Total, //解析数据长度
+                        "data": res.Data //解析数据列表
+                    };
+                }
+            });
+            //头工具栏事件
+            table.on('toolbar(myTable)', function (obj) {
+                console.log(obj);
+                var checkStatus = table.checkStatus(obj.config.id);
+                switch (obj.event) {
+                    case 'check':
+                        var data = checkStatus.data;
+                        if (data.length > 0) {
+                            fly.json('/Admin/Home/RequestComments', { 'action': 'check', 'data': JSON.stringify(data) }, function (res) {
+                                layer.msg(res.msg);
+                            })
+                        } else {
+                            layer.msg('至少选择一项！');
+                            return;
+                        }
+                        break;
+                    case 'delete':
+                        var data = checkStatus.data;
+                        if (data.length > 0) {
+                            layer.confirm('确认删除选中行么', function (index) {
+                                fly.json('/Admin/Home/RequestComments', { 'action': 'batchdel', 'data': JSON.stringify(data) }, function (res) {
+                                    layer.msg(res.msg);
+                                });
+                                layer.close(index);
+
+                            });
+                        } else {
+                            layer.msg('至少选择一项！');
+                            return;
+                        }
+                        break;
+                    case 'isAll':
+                        layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                        break;
+                };
+            });
+            //监听行工具事件
+            table.on('tool(myTable)', function (obj) {
+                var data = obj.data;
+                //console.log(obj)
+                if (obj.event === 'del') {
+                    layer.confirm('真的删除行么', function (index) {
+                        fly.json('/Admin/Home/RequestComments', { 'action': 'delete', 'data': JSON.stringify(data) }, function (res) {
+                            layer.msg(res.msg);
+                        });
+                        obj.del();
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'edit') {
+                    layer.prompt({
+                        formType: 2
+                        , value: data.email
+                    }, function (value, index) {
+                        obj.update({
+                            email: value
+                        });
+                        layer.close(index);
+                    });
+                } else if (obj.event === "check") {
+                    layer.confirm('审核通过？', function (index) {
+                        fly.json('/Admin/Home/RequestComments', { 'action': 'check', 'data': JSON.stringify(data) }, function (res) {
+                            layer.msg(res.msg);
+                        })
+                    });
+                }
+            });
+
+        });
+    </script>
+}

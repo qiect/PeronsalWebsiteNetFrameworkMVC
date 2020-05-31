@@ -1,0 +1,76 @@
+﻿@model PersonalSite.Models.LoginViewModel
+<!--_header 作为公共模版分离出去-->
+<header class="navbar-wrapper">
+    <div class="navbar navbar-fixed-top">
+        <div class="container-fluid cl">
+            <a class="logo navbar-logo hidden-xs" href="/Home/Index">369社区</a>
+            <a class="logo navbar-logo-m visible-xs" href="/Home/Index">369社区</a>
+            <span class="logo navbar-slogan hidden-xs">后台管理系统 &middot; 2.0</span>
+            <span class="logo navbar-slogan visible-xs">后台管理系统 &middot; 2.0</span>
+            <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+            <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+                <ul class="cl">
+                    <li id="divLoginArea">@Html.ActionLink("登录", "Login", "../Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                    <li id="divLoginOutArea" class="dropDown dropDown_hover">
+                        <a href="#" class="dropDown_A">欢迎您，<span id="spanUserName"></span><i class="Hui-iconfont">&#xe6d5;</i></a>
+                        <ul class="dropDown-menu menu radius box-shadow">
+                            <li><a href="/Account/Manage">修改密码</a></li>
+                            <li><a href="javascript:;" id="btnLogout">注销</a></li>
+                        </ul>
+                    </li>
+
+                    <!--换肤-->
+                    <li id="Hui-skin" class="dropDown right dropDown_hover">
+                        <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size: 18px">&#xe62a;</i></a>
+                        <ul class="dropDown-menu menu radius box-shadow">
+                            <li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
+                            <li><a href="javascript:;" data-val="blue" title="蓝色">蓝色</a></li>
+                            <li><a href="javascript:;" data-val="green" title="绿色">绿色</a></li>
+                            <li><a href="javascript:;" data-val="red" title="红色">红色</a></li>
+                            <li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
+                            <li><a href="javascript:;" data-val="orange" title="橙色">橙色</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!--/_header 作为公共模版分离出去-->
+
+<script type="text/javascript">
+    function modaldemo() {
+        $("#modal-demo").modal("show");
+    }
+
+    //向服务器请求当前登录状态，然后切换登录区域的显示
+    var checkLogin = function () {
+        $.post("/Admin/Home/CheckLogin", function (data) {
+            var strs = data.split("|");
+            if (strs[0] == "no") {
+                //alert("木有登陆");
+                $("#divLoginArea").show();
+                $("#divLoginOutArea").hide();
+                $("#content").addClass("hidden");
+            }
+            else {
+                //切换“登录”、“注销”的两个层
+                $("#content").removeClass("hidden");
+                $("#divLoginArea").hide();
+                $("#divLoginOutArea").show();
+                $("#spanUserName").text(strs[1]);//把当前登录用户名显示出来
+            }
+        });
+    }
+
+    $(function () {
+        checkLogin();//刚进入页面的时候也是先向服务器查询当前登录状态
+        $("#btnLogout").click(function () {
+            $.post("/Admin/Home/LogOut", function () {
+                checkLogin();//刷新显示
+            });
+        });
+    });
+</script>
+

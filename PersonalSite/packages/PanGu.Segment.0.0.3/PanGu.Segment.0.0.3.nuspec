@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>PanGu.Segment</id>
+    <version>0.0.3</version>
+    <title>PanGu.Segment</title>
+    <authors>Never、C</authors>
+    <owners>Never、C</owners>
+    <licenseUrl>https://github.com/NeverCL/PanGu.Segment/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/NeverCL/PanGu.Segment</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>盘古分词是一个中英文分词组件。
+原汁原味,欢迎Fork GitHub!</description>
+    <summary>- PanGu.dll
+
+- PanGu.HighLight.dll
+
+- Dict/</summary>
+    <releaseNotes>- PanGu.dll
+
+- PanGu.HighLight.dll
+
+- Dict/</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <language>zh-CN</language>
+    <tags>PanGu Segment pangu segment</tags>
+  </metadata>
+</package>

@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using PersonalSite.Models
+@using BLL
+
+@model  IEnumerable<Model.T_ArticlesSimple>
+
+@{
+    T_ChannelsBLL bll = new T_ChannelsBLL();
+    var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+}
+
+@foreach (var item in Model)
+{
+    <li>
+        <a href="#" class="fly-avatar">
+            <img src="@UserManager.FindById(item.UserId).Avatar" alt="@UserManager.FindById(item.UserId).UserName">
+        </a>
+        <h2>
+            <a class="layui-badge">@bll.GetModel(item.ChannelId).Name</a>
+            @*<a href="/Article/Detail/@item.Id">@item.Title</a>*@
+            <a href="/Art/@item.StaticPath">@item.Title</a>
+        </h2>
+        <div class="fly-list-info">
+            <a href="#" link>
+                <cite>@UserManager.FindById(item.UserId).UserName</cite>
+            </a>
+            <span>
+                @item.PostDate.ToString("yyyy-MM-dd")
+            </span>
+
+            <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> @item.DingCount</span>
+            <span class="fly-list-nums"><i class="iconfont icon-pinglun1" title="回答"></i> @item.ComCount</span>
+        </div>
+        <div class="fly-list-badge">
+            <!--存放置顶或者精贴-->
+            <span class="layui-badge layui-bg-red">精帖</span>
+        </div>
+    </li>
+
+}
